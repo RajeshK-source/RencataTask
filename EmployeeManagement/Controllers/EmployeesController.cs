@@ -74,37 +74,25 @@ namespace EmployeeManagement.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-
-                if (id != employee.EmpId)
-                {
-                    return BadRequest();
-                }
-
-                _context.Entry(employee).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
                 if (!EmployeeExists(id))
                 {
                     return NotFound();
                 }
                 else
                 {
-                    _logger.LogInformation(ex.Message, ex.InnerException + " " + DateTime.Now);
-                    throw;
+                    _context.Entry(employee).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation("Employee ID " + id + " changes Updated Successfully", DateTime.Now);
                 }
+
+                
             }
             catch (Exception ex)
             {
                 _logger.LogInformation(ex.Message, ex.InnerException + " " + DateTime.Now);
             }                      
 
-            return NoContent();
+            return Ok();
         }
 
         // POST: api/Employees
